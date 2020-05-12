@@ -25,4 +25,11 @@ class MyCanvasView(context: Context): View(context) {
         // draw the background color
         extraCanvas.drawColor(backgroundColor)
     }
+
+    // note: this is a  different canvas then extraCanvas
+    override fun onDraw(canvas: Canvas) {
+        super.onDraw(canvas)
+        // draw the background from extraBitmap, offset 0 left, 0 top and set the paint when needed
+        canvas.drawBitmap(extraBitmap, 0f,0f, null)
+    }
 }
