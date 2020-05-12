@@ -4,6 +4,7 @@ import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.Paint
+import android.graphics.Path
 import android.view.View
 import androidx.core.content.res.ResourcesCompat
 
@@ -34,6 +35,9 @@ class MyCanvasView(context: Context): View(context) {
         // how wide is the drawn line in px
         strokeWidth = STROKE_WIDTH
     }
+
+    // the path a user draws
+    private var path = Path()
 
     override fun onSizeChanged(width: Int, height: Int, oldwidth: Int, oldheight: Int) {
         super.onSizeChanged(width, height, oldwidth, oldheight)
