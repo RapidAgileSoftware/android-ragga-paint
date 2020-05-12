@@ -1,10 +1,7 @@
 package com.example.raggapaint
 
 import android.content.Context
-import android.graphics.Bitmap
-import android.graphics.Canvas
-import android.graphics.Paint
-import android.graphics.Path
+import android.graphics.*
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewConfiguration
@@ -49,6 +46,8 @@ class MyCanvasView(context: Context): View(context) {
     // performance tweak to reduce draw: if path moved less then this tolerance -> don't draw
     // this returns distance in Pixels
     private val touchTolerance = ViewConfiguration.get(context).scaledTouchSlop
+    // Rectangle to frame the drawn picture
+    private lateinit var frame:Rect
 
     override fun onSizeChanged(width: Int, height: Int, oldwidth: Int, oldheight: Int) {
         super.onSizeChanged(width, height, oldwidth, oldheight)
@@ -60,6 +59,10 @@ class MyCanvasView(context: Context): View(context) {
         extraCanvas = Canvas(extraBitmap)
         // draw the background color
         extraCanvas.drawColor(backgroundColor)
+
+        //calculate the frame around the new pic
+        val inset = 40
+        frame = Rect(inset,inset, width - inset, height - inset)
     }
 
     // note: this is a  different canvas then extraCanvas
@@ -67,6 +70,8 @@ class MyCanvasView(context: Context): View(context) {
         super.onDraw(canvas)
         // draw the background from extraBitmap, offset 0 left, 0 top and set the paint when needed
         canvas.drawBitmap(extraBitmap, 0f,0f, null)
+        // draw the frame
+        canvas.drawRect(frame, paint)
     }
 
     // needs to implement DOWN, MOVE and UP
