@@ -7,6 +7,7 @@ import android.graphics.Paint
 import android.graphics.Path
 import android.view.MotionEvent
 import android.view.View
+import android.view.ViewConfiguration
 import androidx.core.content.res.ResourcesCompat
 
 private const val STROKE_WIDTH =12f
@@ -44,6 +45,10 @@ class MyCanvasView(context: Context): View(context) {
     // they are the startinng point for the next path after user lifts finger
     private var currentX = 0f
     private var currentY = 0f
+
+    // performance tweak to reduce draw: if path moved less then this tolerance -> don't draw
+    // this returns distance in Pixels
+    private val touchTolerance = ViewConfiguration.get(context).scaledTouchSlop
 
     override fun onSizeChanged(width: Int, height: Int, oldwidth: Int, oldheight: Int) {
         super.onSizeChanged(width, height, oldwidth, oldheight)
@@ -85,7 +90,22 @@ class MyCanvasView(context: Context): View(context) {
     }
 
     private fun touchMove(){
+        // calculate the traveled distance
+        val dx = Math.abs(motionTouchEventX - currentX)
+        val dy = Math.abs(motionTouchEventY - currentY)
 
+        if(dx >= touchTolerance || dy >= touchTolerance){
+            // create curve between the tow points and store it in path = adds segment to the path
+            // QuadTo() adds a quadratic bezier from the last point,
+            // approaching control point (x1,y1), and ending at (x2,y2).
+            path.quadTo(currentX, currentY, (motionTouchEventX + currentX) / 2, (motionTouchEventY + currentY) / 2)
+            currentX = motionTouchEventX
+            currentY = motionTouchEventY
+            // draw the path in extra bitmap to cache it
+            extraCanvas.drawPath(path, paint)
+        }
+        // force re-draw of screen
+        invalidate()
     }
 
     private fun touchUp(){
