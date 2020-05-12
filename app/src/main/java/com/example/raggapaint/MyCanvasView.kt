@@ -3,8 +3,11 @@ package com.example.raggapaint
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.Canvas
+import android.graphics.Paint
 import android.view.View
 import androidx.core.content.res.ResourcesCompat
+
+private const val STROKE_WIDTH =12f
 
 class MyCanvasView(context: Context): View(context) {
 
@@ -13,6 +16,24 @@ class MyCanvasView(context: Context): View(context) {
     private lateinit var extraBitmap: Bitmap
 
     private val backgroundColor = ResourcesCompat.getColor(resources, R.color.colorBackground, null)
+    private val drawColor = ResourcesCompat.getColor(resources, R.color.colorPaint, null)
+
+    // setup the paint
+    private val paint = Paint().apply {
+        color = drawColor
+        // smooth edges
+        isAntiAlias = true
+        // Dithering affects how colors with higher-precision than the device are down-sampled
+        isDither =true
+        // we want a line = stroke
+        style = Paint.Style.STROKE
+        // how do the joinsof two line look
+        strokeJoin = Paint.Join.ROUND
+        // how does the end of a line look
+        strokeCap = Paint.Cap.ROUND
+        // how wide is the drawn line in px
+        strokeWidth = STROKE_WIDTH
+    }
 
     override fun onSizeChanged(width: Int, height: Int, oldwidth: Int, oldheight: Int) {
         super.onSizeChanged(width, height, oldwidth, oldheight)
