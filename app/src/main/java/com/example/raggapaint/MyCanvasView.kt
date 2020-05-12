@@ -41,6 +41,9 @@ class MyCanvasView(context: Context): View(context) {
     private var path = Path()
     private var motionTouchEventX = 0f
     private var motionTouchEventY = 0f
+    // they are the startinng point for the next path after user lifts finger
+    private var currentX = 0f
+    private var currentY = 0f
 
     override fun onSizeChanged(width: Int, height: Int, oldwidth: Int, oldheight: Int) {
         super.onSizeChanged(width, height, oldwidth, oldheight)
@@ -75,7 +78,10 @@ class MyCanvasView(context: Context): View(context) {
     }
 
     private fun touchStart(){
-
+        path.reset()
+        path.moveTo(motionTouchEventX, motionTouchEventY)
+        currentX = motionTouchEventX
+        currentY = motionTouchEventY
     }
 
     private fun touchMove(){
@@ -83,6 +89,6 @@ class MyCanvasView(context: Context): View(context) {
     }
 
     private fun touchUp(){
-        
+
     }
 }
